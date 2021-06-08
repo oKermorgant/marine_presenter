@@ -1,0 +1,7 @@
+go_to:
+    type: std_msgs/Int32
+    Slide: 
+        min: 1
+        max: <slides>
+        default: 1
+        to: data
