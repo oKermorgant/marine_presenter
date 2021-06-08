@@ -1,0 +1,160 @@
+MatrixTransform {
+  DataVariance STATIC
+  name "Slide"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_LIGHTING ON
+  }
+  referenceFrame RELATIVE
+  Matrix {
+    1 0 0 0
+    0 1 0 0
+    0 0 1 0
+    0 0 0 1
+  }
+  num_children 1
+  Geode {
+    DataVariance STATIC
+    name "slide"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_drawables 1
+    Geometry {
+      DataVariance STATIC
+      name "slide-box"
+      StateSet {
+        DataVariance STATIC
+        rendering_hint DEFAULT_BIN
+        renderBinMode INHERIT
+        GL_CULL_FACE ON
+        GL_LIGHTING ON
+        GL_NORMALIZE OVERRIDE|OFF
+        Material {
+          UniqueID Material_0
+          ColorMode OFF
+          ambientColor 1 1 1 1
+          diffuseColor 1 1 1 1
+          specularColor 1 1 1 1
+          emissionColor 1 1 1 1
+          shininess 1
+        }
+        textureUnit 0 {
+          GL_TEXTURE_2D ON
+          Texture2D {
+            file "img/11.png"
+            wrap_s REPEAT
+            wrap_t REPEAT
+            wrap_r CLAMP_TO_EDGE
+            min_filter LINEAR_MIPMAP_LINEAR
+            mag_filter LINEAR
+            maxAnisotropy 1
+            borderColor 0 0 0 0
+            borderWidth 0
+            useHardwareMipMapGeneration TRUE
+            unRefImageDataAfterApply TRUE
+            internalFormatMode USE_S3TC_DXT1_COMPRESSION
+            resizeNonPowerOfTwo FALSE
+            shadowComparison FALSE
+            shadowCompareFunc GL_LEQUAL
+            shadowTextureMode GL_LUMINANCE
+          }
+        }
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 6
+      {
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          1 2 0 3 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          7 4 6 5 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          23 20 22 21 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          19 16 18 17 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 12 15 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          9 10 8 11 
+        }
+      }
+      VertexArray Vec3Array 24
+      {
+      -2.66 -0.02 -2
+        2.66 -0.02 -2
+        2.66 -0.02 2
+        -2.66 -0.02 2
+        -2.66 -0.02 -2
+        -2.66 0.02 -2
+        2.66 0.02 -2
+        2.66 -0.02 -2
+        -2.66 -0.02 2
+        2.66 -0.02 2
+        2.66 0.02 2
+        -2.66 0.02 2
+        2.66 -0.02 -2
+        2.66 0.02 -2
+        2.66 0.02 2
+        2.66 -0.02 2
+        2.66 0.02 -2
+        -2.66 0.02 -2
+        -2.66 0.02 2
+        2.66 0.02 2
+        -2.66 0.02 -2
+        -2.66 -0.02 -2
+        -2.66 -0.02 2
+        -2.66 0.02 2
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 4
+      {
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+      }
+      TexCoordArray 0 Vec2Array 4
+      {
+        0 0
+        1 0
+        1 1
+        0 1
+      }
+    }
+  }
+}

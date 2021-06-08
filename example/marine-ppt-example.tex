@@ -1,0 +1,145 @@
+\documentclass{ecnbeamer}
+\usepackage{multicol}
+
+\title{3D presentations within Coral}
+\author{Olivier Kermorgant}
+\date{Today}
+
+\beamertemplatenavigationsymbolsempty
+
+\graphicspath{{fig/}}
+
+\videoOFF
+
+% TODO
+
+\begin{document}
+
+\MakeTitleNoFoot
+\FootPage
+
+\begin{frame}{Overview}
+ 
+\begin{itemize}
+\item ~ \vfill
+\begin{itemize}
+ \item Prerequisites\vfill
+ \item Build a PDF\vfill
+ \item Write the YAML file\vfill
+ \item Generate simulation files \vfill
+ \item Run presentation
+\end{itemize}
+\end{itemize}
+\placeImage{shark}{2cm}{6cm}{.5\linewidth}
+\end{frame}
+
+\begin{frame}{Prerequisites}
+\begin{itemize}[<+->]
+ \item \texttt{marine\_presenter} requires:\vfill
+ \begin{itemize}
+  \item ROS 2 (hence Ubuntu or similar distribution)\vfill
+  \item Coral
+  \begin{itemize}
+   \item \texttt{https://github.com/oKermorgant/coral}
+  \end{itemize}\vfill
+    \item \texttt{slider\_publisher}
+  \begin{itemize}
+   \item \texttt{apt install ros-foxy-slider-publisher}
+  \end{itemize}\vfill
+  \item PDF tools:
+  \begin{itemize}
+   \item \texttt{pdfinfo}
+   \item \texttt{pdftotext} to get the titles of the slides
+   \item \texttt{pdftoppm} to convert the pages to images
+  \end{itemize}
+ \end{itemize}
+\end{itemize} 
+\end{frame}
+
+
+\begin{frame}{Building the PDF}
+\begin{itemize}
+ \item PDF can come from:
+ \begin{itemize}
+  \item Beamer / LaTeX\vfill
+  \item Powerpoint or LibreOffice
+ \end{itemize}\vfill
+ \item Videos should not be included in the PDF\vfill
+\end{itemize} 
+\end{frame}
+
+\begin{frame}{Configuring the presentation}
+ \begin{itemize}
+  \item Configuration is done through a YAML file with the same name as the PDF\vfill
+  \item This file contains:\vfill
+  \begin{itemize}[<+->]
+   \item General informations (default slide pose, slide scale)\vfill
+   \item Per-slide info: pose or associated videos\vfill
+   \item Additional objects info: relative to slide or global to the environment
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Slide configuration}
+ \begin{itemize}
+  \item The YAML key for a given slide should be:
+  \begin{itemize}
+   \item the slide number
+   \item the slide title (tested with LaTeX)
+  \end{itemize}\vfill
+  \item The \texttt{pose} sub-key is given in $(t_x, t_y, t_z, \text{roll}, \text{pitch}, \text{yaw})$
+  \begin{itemize}
+   \item Unless specified, the next slides use the latest given \texttt{pose}
+  \end{itemize}\vfill
+  \item The \texttt{video} sub-key indicates absolute or relative path to video file
+  \begin{itemize}
+   \item Sub-key can be \texttt{video1}, \texttt{video2}, etc. in case of multiple slides with the same title
+   \item Videos can be played from the presentation by using the \texttt{pause} button of the remote
+   \item VLC is used in command line to play the videos
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Object configuration}
+\begin{itemize}
+ \item Additional objects are given below the \texttt{objects} key
+ \begin{itemize}
+  \item For each object, the key is the name of the URDF file (without extension)
+  \item The \texttt{center} sub-key is the object pose
+  \item If a \texttt{slide} sub-key is given then the pose is relative to this slide\vfill
+  \item Moving along an ellipse
+  \begin{itemize}
+   \item If subkeys \texttt{rx, ry, t} are given then the object will follow an ellipse centered on the given frame
+   \item \texttt{rx} and \texttt{ry} are the width and depth 
+   \item \texttt{t} is the time (in seconds) to do a full orbit
+   \item If \texttt{roll} is given then the object has a roll proportional to its linear velocity
+  \end{itemize}\vfill
+  \item Moving a joint
+  \begin{itemize}
+   \item If the object has revolute joints, then the \texttt{joints} sub-key can be given as a list of times to perform a full circle on each of the joints 
+  \end{itemize}\vfill
+  \item All times can be negative to rotate in the other direction
+ \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Generating and launching}
+ \begin{itemize}
+  \item Generating the launch file is done through:\\
+  \texttt{ros2 run marine\_presenter generate.py <path to PDF file>}\vfill
+  \item It will create a folder with the same name as the PDF\vfill
+  \item Launching is performed with the \texttt{presentation\_launch.py} from this folder\\
+  \texttt{ros2 launch presentation\_launch.py}
+  
+ \end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\end{document}

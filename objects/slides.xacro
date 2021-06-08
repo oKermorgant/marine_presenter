@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot name="slides" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+<xacro:arg name="mesh_path" default="."/>
+<xacro:arg name="slides" default="1"/>
+    
+<xacro:macro name="slide_link" params="num">
+    <link name="presenter/slide_${num}">
+      <visual>
+       <origin rpy="0 0 1.57"/>
+    <geometry>
+        <mesh filename="$(arg mesh_path)/${num}.osg"/>
+      </geometry>
+    </visual>
+    </link>
+    
+    <joint name="dummy_${num}" type="fixed">
+        <parent link="world"/>
+        <child link="presenter/slide_${num}"/>
+    </joint>
+            
+    
+    <xacro:if value="${num > 1}">
+        <xacro:slide_link num="${num-1}"/>
+    </xacro:if>
+  </xacro:macro>
+  
+<xacro:slide_link num="$(arg slides)"/>
+
+<link name="world"/>
+
+</robot>

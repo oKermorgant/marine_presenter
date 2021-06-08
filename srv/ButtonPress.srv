@@ -1,0 +1,5 @@
+int8 BUTTON_NEXT=1
+int8 BUTTON_PREV=2
+int8 BUTTON_ALT=3
+int8 button
+---

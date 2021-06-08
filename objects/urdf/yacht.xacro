@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot name="yacht" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:arg name="prefix" default="yacht"/>
+
+  <link name="$(arg prefix)/base_link">
+    <visual>
+    <origin xyz="-11.1 -16.7 -183.05" rpy="0 0 1.59"/>
+    <geometry>
+        <mesh filename="package://marine_presenter/objects/mesh/yacht.ive"/>
+      </geometry>
+    </visual>
+  </link>
+</robot>

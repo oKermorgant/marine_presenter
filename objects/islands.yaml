@@ -1,0 +1,8 @@
+publish_world_models:
+    ros__parameters:
+      meshes:
+        islands:
+          mesh: package://coral/resources/island/islands.ive
+          pose:
+            position: [80., 100., 58.]
+          #scale: [.01, .001, .001]

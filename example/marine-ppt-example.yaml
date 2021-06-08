@@ -1,0 +1,39 @@
+# default pose for slide
+pose: [0, 0, 1, 0, 0, 1.571]
+scale: 2
+fit: [1]
+# first slide
+1: 
+    pose: [60, 120, 10, 0, 0.1, 1.8]
+# intro / boat
+Overview:
+    pose: [-10, 0, 1, 0, 0, 1]
+# go underwater from this slide
+'Configuring the presentation':
+    pose: [10, 3, -4, 0, -0.2, 0]
+'Slide configuration': 
+    video: 'video.mp4'
+# back above water
+'Object configuration': 
+    pose: [41, -1, 1, 0, 0, 0.9]
+
+    
+# for additional objects indicate ellipsoid coordinates and center
+objects:    
+    bluerov:
+        center: [0,0,0,-0.2,0,0]    # frame to ellipse transform
+        slide: 'Configuring the presentation'
+        rx: .5  # depth of ellipse
+        ry: 1.75 # width
+        t: 30
+        roll: 0.
+    yacht:
+        center: [0,0,-1,0,0,0]
+        slide: 'Object configuration'
+        ry: 1.45
+        rx: 0.25
+        t: -20
+        roll: -0.4
+    turbine: 
+        center: [10,-10,5,0,0,1.571]
+        joints: [-15]
