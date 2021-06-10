@@ -14,12 +14,6 @@ from time import sleep
 
 # value = 1
 
-rclpy.init()
-
-node = Node('remote')
-
-rospy.wait_for_service('remote')
-remote = rospy.ServiceProxy('remote', ButtonPress)
 
 # find presenter
 dev = None
@@ -34,12 +28,34 @@ while dev == None:
     sleep(1)
 
 keys = {}
-keys[evdev.ecodes.KEY_PAGEDOWN] = ButtonPressRequest.BUTTON_NEXT
-keys[evdev.ecodes.KEY_PAGEUP] = ButtonPressRequest.BUTTON_PREV
-keys[evdev.ecodes.KEY_B] = ButtonPressRequest.BUTTON_ALT
+keys[evdev.ecodes.KEY_PAGEDOWN] = ButtonPress.Request.BUTTON_NEXT
+keys[evdev.ecodes.KEY_PAGEUP] = ButtonPress.Request.BUTTON_PREV
+keys[evdev.ecodes.KEY_B] = ButtonPress.Request.BUTTON_ALT
 
-# loop and call service with pressed button
+class RemoteNode(Node):
+
+    def __init__(self):
+        super().__init__('remote')
+        self.cli = self.create_client(ButtonPress, 'remote')
+        while not self.cli.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info('service not available, waiting again...')
+        self.req = ButtonPress.Request()
+
+    def send_request(self, button):
+        self.req.button = button
+        self.future = self.cli.call_async(self.req)
+
+
+
+rclpy.init()
+
+remote_client = RemoteNode()
+
 for event in dev.read_loop():
+    
+    if not rclpy.ok():
+        break
+    
     if event.type == evdev.ecodes.EV_KEY:
         print(evdev.categorize(event))
         print(event.type)
@@ -47,7 +63,7 @@ for event in dev.read_loop():
         print(event.code)
         
         if event.value and event.code in keys:
-            remote.call(keys[event.code])
-        
-    if rospy.is_shutdown():
-        exit(0)
+            remote_client.send_request(keys[event.code])
+            
+remote_client.destroy_node()
+rclpy.shutdown()

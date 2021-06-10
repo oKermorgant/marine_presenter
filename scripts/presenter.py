@@ -196,9 +196,9 @@ class Slide:
         poses[self.link] = Homogeneous(config[slide if slide in config else 1]['pose'])
         self.front = False
                         
-        cam_rel_pose = Homogeneous([3.8,0,0,0,0,0])
+        cam_rel_pose = Homogeneous([2.8,0,0,0,0,0])
         if 'fit' in config and slide in config['fit']:            
-            cam_rel_pose = Homogeneous([3.3,0,0,0,0,0])
+            cam_rel_pose = Homogeneous([2.3,0,0,0,0,0])
         cam_rel_pose[:3,3] *= config['scale']        
         self.cam = poses[self.link] * Slide.pose_offset * cam_rel_pose
             
