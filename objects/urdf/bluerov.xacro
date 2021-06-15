@@ -2,16 +2,12 @@
 <robot name="bluerov" xmlns:xacro="http://www.ros.org/wiki/xacro">
     
 <xacro:arg name="prefix" default="bluerov"/>
-    <material name="brovgrey">
-    <color rgba="0.25 0.25 0.28 1"/>
-  </material>
 
-  <link name="$(arg prefix)/base_link">
+<link name="$(arg prefix)/base_link">
     <visual>
       <geometry>
         <mesh filename="package://marine_presenter/objects/mesh/bluerov2_noprop.ive"/>        
       </geometry>
-      <material name="brovgrey"/>
     </visual>
   </link>
 </robot>
