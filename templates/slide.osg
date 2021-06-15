@@ -30,8 +30,8 @@ MatrixTransform {
         DataVariance STATIC
         rendering_hint DEFAULT_BIN
         renderBinMode INHERIT
-        GL_CULL_FACE ON
-        GL_LIGHTING ON
+        GL_CULL_FACE OFF
+        GL_LIGHTING OFF
         GL_NORMALIZE OVERRIDE|OFF
         Material {
           UniqueID Material_0
@@ -40,7 +40,7 @@ MatrixTransform {
           diffuseColor 1 1 1 1
           specularColor 1 1 1 1
           emissionColor 1 1 1 1
-          shininess 1
+          shininess 0.0001
         }
         textureUnit 0 {
           GL_TEXTURE_2D ON
