@@ -14,8 +14,9 @@
     </visual>
     </link>
     
-    <!-- URDF parsing complains if several root links -->
-    <joint name="dummy_${num}" type="fixed">
+    <!-- URDF parsing complains if several root links
+         Coral needs this link to be non-fixed in order to listen to the transform -->
+    <joint name="dummy_${num}" type="continuous">
         <parent link="world"/>
         <child link="presenter/slide_${num}"/>
     </joint>

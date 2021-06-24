@@ -269,7 +269,7 @@ class PresenterNode(Node):
                 
         # update current slide
         if self.button.pressed:
-            if self.button.pressed == ButtonPressRequest.BUTTON_ALT:
+            if self.button.pressed == ButtonPress.Request.BUTTON_ALT:
                 #print('Slide {} ({}): \n  {}'.format(slide, playing, config[slide]))
                 if 'video' in config[self.slide] and not self.in_video:
                     os.system('vlc {} -f &'.format(config[self.slide]['video']))
@@ -279,7 +279,7 @@ class PresenterNode(Node):
                     self.in_video = False
             else:
                 self.hide_slide()
-                if self.button.pressed == ButtonPressRequest.BUTTON_PREV:
+                if self.button.pressed == ButtonPress.Request.BUTTON_PREV:
                     self.slide = (self.slide-1) % slides
                 else:
                     self.slide = (self.slide+1) % slides
