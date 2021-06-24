@@ -235,7 +235,7 @@ class PresenterNode(Node):
                         **kwargs)
         
         # init slides
-        self.slides = [Slide(slide) for slide in range(1, slides+1)]
+        self.slides = [None] + [Slide(slide) for slide in range(1, slides+1)]
         
         # init moving objects
         self.objects = {}
@@ -253,7 +253,7 @@ class PresenterNode(Node):
         self.button = Button(self)
         
         # current state
-        self.slide = 0
+        self.slide = 1
         self.in_video = False
         
         self.timer = self.create_timer(0.05, self.update)
@@ -262,16 +262,17 @@ class PresenterNode(Node):
         self.slides[self.slide].show()
         
     def hide_slide(self):
-        if self.slide != 0:
-            self.slides[self.slide].hide()        
+        self.slides[self.slide].hide()        
         
     def update(self):
                 
         # update current slide
         if self.button.pressed:
             if self.button.pressed == ButtonPress.Request.BUTTON_ALT:
-                #print('Slide {} ({}): \n  {}'.format(slide, playing, config[slide]))
-                if 'video' in config[self.slide] and not self.in_video:
+                #print('Slide {} ({}): \n  {}'.format(self.slide, self.in_video, config[self.slide]))
+                print('Slide {} ({})'.format(self.slide, self.in_video))
+                if self.slide in config and 'video' in config[self.slide] and not self.in_video:
+                    print('Slide {} ({}): \n  {}'.format(self.slide, self.in_video, config[self.slide]))
                     os.system('vlc {} -f &'.format(config[self.slide]['video']))
                     self.in_video = True
                 elif self.in_video:
@@ -280,9 +281,9 @@ class PresenterNode(Node):
             else:
                 self.hide_slide()
                 if self.button.pressed == ButtonPress.Request.BUTTON_PREV:
-                    self.slide = (self.slide-1) % slides
+                    self.slide = 1 + (self.slide-1) % slides 
                 else:
-                    self.slide = (self.slide+1) % slides
+                    self.slide = 1 + (self.slide+1) % slides
                 self.show_slide()
                 
                 self.Md = self.slides[self.slide].cam

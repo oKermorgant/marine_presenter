@@ -97,6 +97,15 @@ def Homogeneous(pose):
                     M[i,j] = v
     return np.matrix(M)
 
+def rec_insert(d, keys, val):
+    key = keys.pop(0)
+    if not len(keys):
+        d[key] = val
+        return
+    if key not in d:
+        d[key] = {}
+    rec_insert(d[key], keys, val)
+
 basename = os.path.abspath(filename[:-4])
 mesh_path = basename + '/mesh'
 img_path = mesh_path + '/img'
@@ -116,7 +125,8 @@ pages = check_output(['pdfinfo',filename]).decode('utf-8').splitlines()
 pages = [line for line in pages if line.startswith('Pages:')][0]
 pages = int(pages.replace('Pages:','').replace(' ',''))
 
-# change config to page-numbered
+# change config to page-numbered, check videos
+
 titles = {}
 for slide in range(1,pages+1):
     title = check_output(['pdftotext','-f', str(slide), '-l', str(slide),'-layout', '{}'.format(filename),'-']).decode('utf-8')
@@ -124,20 +134,29 @@ for slide in range(1,pages+1):
     if [ord(c) for c in title[-2:]] == [8722,49]:
         title = title[:-5]
     if title not in titles:
-        titles[title] = slide
+        titles[title] = [slide]
+    else:
+        titles[title].append(slide)
+        
+for title, slides in titles.items():
+    
+    base_slide = slides[0]
     
     if title in config:
-        config[slide] = config.pop(title)
-        slide_videos = [key for key in config[slide] if key.startswith('video')]
+        config[base_slide] = config.pop(title)
+    
+    if base_slide in config:
+        
+        slide_videos = [key for key in config[base_slide] if key.startswith('video')]
         for video in slide_videos:
-            if video == 'video':
-                config[slide]['video'] = os.path.abspath(config[slide].pop(video))
+            video_path = os.path.abspath(os.path.dirname(basename) + '/' + config[base_slide].pop(video))
+            if video == 'video':            
+                for slide in slides:
+                    rec_insert(config, [slide, 'video'], video_path)
             else:
                 offset = int(video[5:])-1
-                config[slide+offset] = deepcopy(config[slide])
-                config[slide].pop(video)
-                config[slide+offset]['video'] = os.path.abspath(config[slide+offset].pop(video))
-
+                rec_insert(config, [base_slide+offset, 'video'], video_path)
+ 
 videos = sorted([key for key in config if type(key) == int and 'video' in config[key]])
 print('Found {} slides'.format(pages))
         
@@ -162,7 +181,7 @@ if pdf_change or video_change or generate:
     
     # add video tag / borders
     for idx in videos:
-        add_icon(slide_img(slide), video_x, video_y, video_w)
+        add_icon(slide_img(idx), video_x, video_y, video_w)
 
     if 'fit' in config:
         for slide in config['fit']:
@@ -253,7 +272,7 @@ if 'objects' in config:
             pose = read_pose(data['center'],pose)
         if 'slide' in data:
             if type(data['slide']) == str:
-                data['slide'] = titles[data['slide']]
+                data['slide'] = titles[data['slide']][0]
             # pose is actually relative to slide
             M = Homogeneous(config[data['slide']]['pose']) * Homogeneous(pose)
             for i in range(3):

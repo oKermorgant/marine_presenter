@@ -11,13 +11,13 @@ Overview:
 # go underwater from this slide
 'Configuring the presentation':
     pose: [10, 3, -4, 0, -0.2, 0]
+    video2: 'video.mp4'
 'Slide configuration': 
     video: 'video.mp4'
 # back above water
 'Object configuration': 
     pose: [41, -1, 1, 0, 0, 0.9]
 
-    
 # for additional objects indicate ellipsoid coordinates and center
 objects:    
     bluerov:
