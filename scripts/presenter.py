@@ -243,7 +243,7 @@ class PresenterNode(Node):
             self.objects = [MovingObject(name, params, self) for name, params in config['objects'].items()]
             
         # init cam view
-        self.cam = Camera(self.slides[0].cam, config['gain'])
+        self.cam = Camera(self.slides[1].cam, config['gain'])
         poses['coral_cam_view'] = self.cam.M.copy()
         self.Md = self.cam.M.copy()
         
