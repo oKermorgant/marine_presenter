@@ -109,7 +109,7 @@ class Button:
         return res
     
     def slide_cb(self, msg):
-        des_slide = msg.data-1
+        des_slide = msg.data
         
         if self.slide_prev == -1:
             self.slide_prev = des_slide
