@@ -24,6 +24,6 @@ def generate_launch_description():
             
     for link, pose in fixed_tfs.items():
         sl.node('tf2_ros', 'static_transform_publisher', link[:link.find('/')] + '_static', 
-                arguments='{} world {}'.format(' '.join(str(c) for c in pose), link))
+                arguments=[str(c) for c in pose] + ['world', link])
                
     return sl.launch_description()

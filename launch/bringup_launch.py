@@ -12,7 +12,7 @@ def generate_launch_description():
     
     sl.node('slider_publisher', 'slider_publisher', arguments=[sl.arg('slider')])
     
-    sl.node('marine_presenter', 'presenter.py', arguments=sl.arg('config'), output='screen')
+    sl.node('marine_presenter', 'presenter.py', arguments=[sl.arg('config')], output='screen')
     
     with sl.group(if_arg='remote'):
         sl.node('marine_presenter', 'remote.py')
