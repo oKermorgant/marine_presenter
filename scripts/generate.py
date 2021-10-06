@@ -13,8 +13,6 @@ from copy import deepcopy
 import xacro
 from urdf_parser_py.urdf import URDF
 
-
-
 marine_ppt = get_package_share_directory('marine_presenter')
 
 def add_icon(img, x, y, w):
@@ -105,6 +103,22 @@ def rec_insert(d, keys, val):
     if key not in d:
         d[key] = {}
     rec_insert(d[key], keys, val)
+    
+def resolve(xacro_file):
+    pkg, path = xacro_file[10:].split('/',1)
+    pkg = get_package_share_directory(pkg)
+    
+    xacro_file = os.path.join(pkg,path)
+    
+    if os.path.exists(xacro_file):
+        return xacro_file
+
+    # path is a raw file, look for it
+    for root, dirs, files in os.walk(pkg, topdown=False):
+        if path in files:
+            return os.path.join(root, path)
+        
+    return xacro_file
 
 basename = os.path.abspath(filename[:-4])
 mesh_path = basename + '/mesh'
@@ -224,6 +238,10 @@ if 'objects' in config:
     for name in config['objects']:
         data = config['objects'][name]        
         xacro_file = data['file'] if 'file' in data else name
+        
+        if xacro_file.startswith('package'):
+            xacro_file = resolve(xacro_file)
+            data['file'] = xacro_file
         
         if '/' not in xacro_file:
             marine_files = os.listdir(marine_ppt + '/objects/urdf')

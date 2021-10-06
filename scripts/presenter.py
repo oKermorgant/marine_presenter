@@ -7,7 +7,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.executors import SingleThreadedExecutor
 from ament_index_python import get_package_share_directory
-from tf2_ros import transform_broadcaster
+from tf2_ros import TransformBroadcaster
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped, Transform
 from std_msgs.msg import Int32
@@ -247,7 +247,7 @@ class PresenterNode(Node):
         poses['coral_cam_view'] = self.cam.M.copy()
         self.Md = self.cam.M.copy()
         
-        self.br = transform_broadcaster.TransformBroadcaster(self)
+        self.br = TransformBroadcaster(self)
         
         # init button service
         self.button = Button(self)
@@ -315,8 +315,6 @@ class PresenterNode(Node):
         self.br.sendTransform(transforms)
         
 
-   
-        
 rclpy.init()    
 
 executor = SingleThreadedExecutor()

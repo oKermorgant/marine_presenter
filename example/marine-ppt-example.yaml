@@ -30,8 +30,8 @@ objects:
     yacht:
         center: [0,0,-1,0,0,0]
         slide: 'Object configuration'
-        ry: 1.45
         rx: 0.25
+        ry: 1.45
         t: -20
         roll: -0.4
     turbine: 
