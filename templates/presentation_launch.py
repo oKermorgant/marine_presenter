@@ -25,5 +25,9 @@ def generate_launch_description():
     for link, pose in fixed_tfs.items():
         sl.node('tf2_ros', 'static_transform_publisher', link[:link.find('/')] + '_static', 
                 arguments=[str(c) for c in pose] + ['world', link])
+        
+    # spawn all static in Coral
+    for name in list(objects.keys()) + ['presenter']:
+        sl.node('coral','spawn',parameters={'namespace': '/'+ name, 'pose_topic': ''})
                
     return sl.launch_description()

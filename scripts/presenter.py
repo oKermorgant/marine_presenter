@@ -16,15 +16,24 @@ import xacro
 from urdf_parser_py.urdf import URDF
 
 import numpy as np
-from transforms3d.euler import euler2mat
-from transforms3d.quaternions import mat2quat
-from transforms3d.axangles import axangle2mat, mat2axangle
+from scipy.spatial.transform import Rotation
 
 from marine_presenter.srv import ButtonPress
 
 import os
 import sys
 from copy import deepcopy
+
+# rotation shortcuts
+def euler2mat(r, p, y):    
+    return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
+def axangle2mat(r):
+    return Rotation.from_rotvec(r).as_dcm()
+def mat2axangle(R):
+    return Rotation.from_dcm(R).as_rotvec()
+def mat2quat(R,q):
+    q.x,q.y,q.z,q.w = Rotation.from_dcm(R).as_quat()
+    
 
 config_file = sys.argv[1]
 if not config_file.endswith('.yaml'):
@@ -38,7 +47,7 @@ def HomogeneousFrom(t, R):
     return np.matrix(np.vstack((np.hstack((R, t)), [0,0,0,1])))
     
 def Homogeneous(pose):
-    R = euler2mat(pose[3], pose[4], pose[5], 'rxyz')
+    R = euler2mat(pose[3], pose[4], pose[5])
     t = np.array(pose[:3]).reshape(3,1)
     M = HomogeneousFrom(t, R)
     for i in range(3):
@@ -71,8 +80,8 @@ class Camera:
             err = HomogeneousInverse(self.M)*Md
         else:
             err = HomogeneousInverse(Md)*self.M
-        u,theta = mat2axangle(err[:3,:3])
-        err = HomogeneousFrom(self.gain*err[:3,[3]], axangle2mat(u,self.gain*theta))
+        u_theta = mat2axangle(err[:3,:3])
+        err = HomogeneousFrom(self.gain*err[:3,[3]], axangle2mat(self.gain*u_theta))
         if straight:
             self.M *= err
         else:
@@ -86,13 +95,8 @@ if 'gain' not in config:
 def mat2tf(M, tr):
     tr.translation.x = M[0,3]
     tr.translation.y = M[1,3]
-    tr.translation.z = M[2,3]
-    q = mat2quat(M[:3,:3])
-    tr.rotation.x = q[1]
-    tr.rotation.y = q[2]
-    tr.rotation.z = q[3]
-    tr.rotation.w = q[0]
-        
+    tr.translation.z = M[2,3]    
+    mat2quat(M[:3,:3], tr.rotation)        
         
 class Button:
     def __init__(self, node):
