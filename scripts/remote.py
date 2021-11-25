@@ -45,8 +45,6 @@ class RemoteNode(Node):
         self.req.button = button
         self.future = self.cli.call_async(self.req)
 
-
-
 rclpy.init()
 
 remote_client = RemoteNode()

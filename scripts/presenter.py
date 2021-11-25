@@ -273,25 +273,22 @@ class PresenterNode(Node):
         # update current slide
         if self.button.pressed:
             if self.button.pressed == ButtonPress.Request.BUTTON_ALT:
-                #print('Slide {} ({}): \n  {}'.format(self.slide, self.in_video, config[self.slide]))
-                print('Slide {} ({})'.format(self.slide, self.in_video))
+                #print('Slide {} ({}): \n  {}'.format(self.slide, self.in_video, config[self.slide]))                
                 if self.slide in config and 'video' in config[self.slide] and not self.in_video:
-                    print('Slide {} ({}): \n  {}'.format(self.slide, self.in_video, config[self.slide]))
-                    os.system('vlc {} -f &'.format(config[self.slide]['video']))
+                    os.system("vlc {} -f &".format(config[self.slide]['video']))
                     self.in_video = True
                 elif self.in_video:
-                    os.system('killall vlc')
+                    os.system('killall vlc -q')
                     self.in_video = False
             else:
                 self.hide_slide()
                 if self.button.pressed == ButtonPress.Request.BUTTON_PREV:
-                    self.slide = 1 + (self.slide-1) % slides 
+                    self.slide = 1 + (self.slide-2) % slides 
                 else:
-                    self.slide = 1 + (self.slide+1) % slides
+                    self.slide = 1 + self.slide % slides
                 self.show_slide()
                 
                 self.Md = self.slides[self.slide].cam
-                
             self.button.reset()
             
         elif self.button.slide not in (-1, self.slide):

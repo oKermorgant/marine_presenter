@@ -163,7 +163,10 @@ for title, slides in titles.items():
         
         slide_videos = [key for key in config[base_slide] if key.startswith('video')]
         for video in slide_videos:
-            video_path = os.path.abspath(os.path.dirname(basename) + '/' + config[base_slide].pop(video))
+            video_path = config[base_slide].pop(video)
+            print(f'  found video: {video_path}')
+            if not video_path.startswith('/'):
+                video_path = os.path.abspath(os.path.dirname(basename) + '/' + video_path)
             if video == 'video':            
                 for slide in slides:
                     rec_insert(config, [slide, 'video'], video_path)
@@ -308,7 +311,6 @@ print('Generating launch file...')
 manual = open(marine_ppt + '/templates/manual.yaml').read()
 with open(basename + '/manual.yaml', 'w') as f:
     f.write(manual.replace('<slides>', str(pages)))
-
 
 launch = open(marine_ppt + '/templates/presentation_launch.py').read()
 
