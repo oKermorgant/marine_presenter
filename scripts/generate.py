@@ -7,11 +7,16 @@ import cv2
 from ament_index_python import get_package_share_directory
 import yaml
 import numpy as np
-from transforms3d.euler import euler2mat, mat2euler
 from subprocess import check_output, run
 from copy import deepcopy
 import xacro
 from urdf_parser_py.urdf import URDF
+
+from scipy.spatial.transform import Rotation
+def euler2mat(r, p, y, seq):    
+    return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
+def mat2euler(M):
+    return Rotation.from_dcm(M[:3,:3]).as_euler('xyz').tolist()
 
 marine_ppt = get_package_share_directory('marine_presenter')
 
@@ -181,11 +186,14 @@ pdf_change = True
 video_change = True
 scale_change = True
 if os.path.exists(config_out):
-    prev = yaml.safe_load(open(config_out))
-    if 'pdf_time' in prev:
-        pdf_change = prev['pdf_time'] != int(os.stat(filename).st_mtime)
-    video_change = videos != sorted([key for key in prev if type(key) == int and 'video' in prev[key]])
-    scale_change = scale != prev['scale']
+    try:
+        prev = yaml.safe_load(open(config_out))
+        if 'pdf_time' in prev:
+            pdf_change = prev['pdf_time'] != int(os.stat(filename).st_mtime)
+        video_change = videos != sorted([key for key in prev if type(key) == int and 'video' in prev[key]])
+        scale_change = scale != prev['scale']
+    except:
+        pass
 config['pdf_time'] = int(os.stat(filename).st_mtime)
     
     
