@@ -1,13 +1,32 @@
 <?xml version="1.0" ?>
 <robot name="turbine" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
 <xacro:arg name="prefix" default="turbine"/>
+
+<xacro:property name="height" value="8"/>
+
+<material name="base">
+    <color rgba=".8 .8 0 1"/>
+</material>
+        
+<link name="$(arg prefix)/base_link"> 
+    <visual>
+        <origin xyz="0 0 ${height/2}"/>
+    <geometry>
+        <cylinder radius=".45" length="${height}"/>
+    </geometry>
+    <material name="base"/>
+    </visual>
+</link>
+<joint name="base" type="fixed">
+    <parent link="$(arg prefix)/base_link"/>
+    <child link="$(arg prefix)/pole"/>
+    <origin xyz="0 0 ${height}"/>
+</joint>
 
 <link name="$(arg prefix)/pole"> 
     <visual>
-         <origin xyz="-0.2 0 -1.9" rpy="0 0 0" />
-<!--          <origin xyz="0 0 -5.1" rpy="0 0 0" /> -->
       <geometry>
-        <!--box size="0.102 0.109 0.106" /-->
         <mesh filename="package://marine_presenter/objects/mesh/pole.ive"  scale="1 1 1"/>
       </geometry>
     </visual> 
@@ -16,13 +35,12 @@
   <joint name="turbine" type="continuous">
     <parent link="$(arg prefix)/pole"/>
     <child link="$(arg prefix)/blades"/>
-    <axis xyz="0 0 1"/>
-    <origin xyz="-0.5 0 0.5" rpy="0 1.5707963267948966 0" />
+    <axis xyz="1 0 0"/>
+    <origin xyz="0.71 0.0 16.864" />
   </joint>  
-  
+    
   <link name="$(arg prefix)/blades">  
     <visual>
-         <origin xyz="5.95 0.5 0" rpy="0 -1.5707963267948966 0" />
       <geometry>
         <mesh filename="package://marine_presenter/objects/mesh/blades.ive"  scale="1 1 1"/>
       </geometry>

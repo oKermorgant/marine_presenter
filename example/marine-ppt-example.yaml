@@ -16,7 +16,7 @@ Overview:
     video: 'video.mp4'
 # back above water
 'Object configuration': 
-    pose: [41, -1, 1, 0, 0, 0.9]
+    pose: [71, -1, 1, 0, 0, 0.6]
 
 # for additional objects indicate ellipsoid coordinates and center
 objects:    
@@ -35,5 +35,5 @@ objects:
         t: -20
         roll: -0.4
     turbine: 
-        center: [10,-15,4,0,0,1.571]
+        center: [10,-15,-7,0,0,1.571]
         joints: [-15]

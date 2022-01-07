@@ -76,13 +76,13 @@ def dict_replace(s, d):
         s = s.replace(key, d[key])
     return s
 
-def read_pose(pose, base_pose = (0,0,0,0,0,0)):
+def read_pose(pose, base_pose = (0,0,0,0,0,0), scaling=True):
     if type(pose) == dict:
         if 'pose' in pose:
-            return read_pose(pose['pose'], base_pose)
+            return read_pose(pose['pose'], base_pose, scaling)
         return base_pose
     
-    if len(pose) >= 3:
+    if len(pose) >= 3 and scaling:
         pose[2] *= scale
     if len(pose) == 6:
         return pose
@@ -297,9 +297,13 @@ if 'objects' in config:
 
         # find pose and scale
         pose = [0,0,0,0,0,0]
-        if 'center' in data:
-            pose = read_pose(data['center'],pose)
+        if 'center' in data and 'slide' not in data:
+            # absolute pose
+            pose = read_pose(data['center'],pose, False)
         if 'slide' in data:
+            if 'center' in data:
+                # relative pose with scaling
+                pose = read_pose(data['center'],pose)
             if type(data['slide']) == str:
                 data['slide'] = titles[data['slide']][0]
             # pose is actually relative to slide
