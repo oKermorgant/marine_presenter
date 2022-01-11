@@ -10,7 +10,7 @@ from ament_index_python import get_package_share_directory
 from tf2_ros import TransformBroadcaster
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TransformStamped, Transform
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, String
 
 import xacro
 from urdf_parser_py.urdf import URDF
@@ -229,6 +229,8 @@ class RSPNode(Node):
         mesh_path = os.path.abspath(os.path.dirname(config_file)) + '/mesh'
         description = xacro.process(slides_xacro, mappings={'slides':str(slides), 'mesh_path':mesh_path})        
         self.declare_parameter('robot_description', description)
+        
+        self.pub = self.create_publisher(String, 'robot_description', 10)
         
         
 class PresenterNode(Node):
