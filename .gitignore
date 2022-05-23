@@ -1,5 +1,4 @@
 # OK general gitignore
-marine-ppt-example/
 # Compiled source #
 ###################
 *.com
@@ -72,4 +71,5 @@ slides/
 #mesh/
 #*.osg
 #*.ive
+.*
 marine-ppt-example/*

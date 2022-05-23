@@ -318,7 +318,7 @@ if 'objects' in config:
                 
 yaml.safe_dump(config, open(config_out, 'w'), default_flow_style=False)     
 
-print('Generating launch file...')
+print('Generating launch file...', '\r')
 
 manual = open(marine_ppt + '/templates/manual.yaml').read()
 with open(basename + '/manual.yaml', 'w') as f:
@@ -341,7 +341,7 @@ if 'objects' in config:
 with open(basename + '/presentation_launch.py', 'w') as f:
     f.write(launch.replace('<objects>', str(objects)).replace('<fixed_tfs>', str(fixed_tfs)))
 
-print('\r done.')
+print('done.')
 
 if '-p' in sys.argv:
     os.system('ros2 launch ' + basename + '/presentation_launch.py')

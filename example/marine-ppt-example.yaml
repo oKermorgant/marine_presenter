@@ -36,4 +36,4 @@ objects:
         roll: -0.4
     turbine: 
         center: [10,-15,-7,0,0,1.571]
-        joints: [-15]
+        joints: [-3]

@@ -7,9 +7,6 @@ def generate_launch_description():
     sl.declare_arg('slider', default_value= '', description='path to the slider file')
     sl.declare_arg('remote', default_value=True)
 
-    sl.node('marine_presenter', 'publish_world_models.py', 'publish_world_models', 
-            parameters=[sl.find('marine_presenter', 'islands.yaml')])
-    
     sl.node('slider_publisher', 'slider_publisher', name='slides', arguments=[sl.arg('slider')])
     
     sl.node('marine_presenter', 'presenter.py', arguments=[sl.arg('config')], output='screen')

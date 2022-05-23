@@ -10,17 +10,17 @@ def generate_launch_description():
     sl.declare_arg('remote', default_value=True)
     
     sl.include('marine_presenter', 'bringup_launch.py', 
-               launch_arguments={'config': config_file, 
-                                 'slider': slider_file,
-                                 'remote': sl.arg('remote')})
+               launch_arguments=[('config', config_file), 
+                                 ('slider', slider_file),
+                                 ('remote', sl.arg('remote'))])
     
     # environment
     with sl.group(ns='islands'):
         sl.robot_state_publisher('marine_presenter','islands.urdf')
                
     # descriptions
-    objects = <objects>
-    fixed_tfs = <fixed_tfs>
+    objects = {'bluerov': '/home/olivier/code/ros2/install/marine_presenter/share/marine_presenter/objects/urdf/bluerov.xacro', 'yacht': '/home/olivier/code/ros2/install/marine_presenter/share/marine_presenter/objects/urdf/yacht.xacro', 'turbine': '/home/olivier/code/ros2/install/marine_presenter/share/marine_presenter/objects/urdf/turbine.xacro'}
+    fixed_tfs = {'turbine/base_link': [10, -15, -7, 1.571, 0, 0]}
     
     for name, filename in objects.items():
         with sl.group(ns=name):
