@@ -13,11 +13,12 @@ import xacro
 from urdf_parser_py.urdf import URDF
 
 from scipy.spatial.transform import Rotation
-def euler2mat(r, p, y, seq):    
+def euler2mat(r, p, y):    
     try:
         return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
     except:
         return Rotation.from_euler('xyz',(r,p,y)).as_matrix()
+    
 def mat2euler(M):
     try:
         return Rotation.from_dcm(M[:3,:3]).as_euler('xyz').tolist()

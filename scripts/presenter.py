@@ -36,7 +36,7 @@ def mat2Rot(R):
     except:
         return Rotation.from_matrix(R)
 
-def euler2mat(r, p, y, seq):  
+def euler2mat(r, p, y):  
     return Rot2mat(Rotation.from_euler('xyz',(r,p,y)))    
 def axangle2mat(r):
     return Rot2mat(Rotation.from_rotvec(r))
