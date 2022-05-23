@@ -25,15 +25,26 @@ import sys
 from copy import deepcopy
 
 # rotation shortcuts
-def euler2mat(r, p, y):    
-    return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
+def Rot2mat(R):
+    try:
+        return R.as_dcm()
+    except:
+        return R.as_matrix()
+def mat2Rot(R):
+    try:
+        return Rotation.from_dcm(R)
+    except:
+        return Rotation.from_matrix(R)
+
+def euler2mat(r, p, y, seq):  
+    return Rot2mat(Rotation.from_euler('xyz',(r,p,y)))    
 def axangle2mat(r):
-    return Rotation.from_rotvec(r).as_dcm()
+    return Rot2mat(Rotation.from_rotvec(r))
+
 def mat2axangle(R):
-    return Rotation.from_dcm(R).as_rotvec()
+    return mat2Rot(R).as_rotvec()
 def mat2quat(R,q):
-    q.x,q.y,q.z,q.w = Rotation.from_dcm(R).as_quat()
-    
+    q.x,q.y,q.z,q.w = mat2Rot(R).as_quat()    
 
 config_file = sys.argv[1]
 if not config_file.endswith('.yaml'):

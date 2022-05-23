@@ -14,9 +14,15 @@ from urdf_parser_py.urdf import URDF
 
 from scipy.spatial.transform import Rotation
 def euler2mat(r, p, y, seq):    
-    return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
+    try:
+        return Rotation.from_euler('xyz',(r,p,y)).as_dcm()
+    except:
+        return Rotation.from_euler('xyz',(r,p,y)).as_matrix()
 def mat2euler(M):
-    return Rotation.from_dcm(M[:3,:3]).as_euler('xyz').tolist()
+    try:
+        return Rotation.from_dcm(M[:3,:3]).as_euler('xyz').tolist()
+    except:
+        return Rotation.from_matrix(M[:3,:3]).as_euler('xyz').tolist()
 
 marine_ppt = get_package_share_directory('marine_presenter')
 
