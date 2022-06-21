@@ -293,6 +293,7 @@ class PresenterNode(Node):
                 elif self.in_video:
                     os.system('killall vlc -q')
                     self.in_video = False
+                
             else:
                 self.hide_slide()
                 if self.button.pressed == ButtonPress.Request.BUTTON_PREV:

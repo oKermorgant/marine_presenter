@@ -5,3 +5,8 @@ go_to:
         max: <slides>
         default: 1
         to: data
+/remote:
+    type: marine_presenter/ButtonPress
+    Switch video:
+        to: 'on'
+    button: 3

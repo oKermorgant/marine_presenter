@@ -51,17 +51,48 @@ def add_borders(img, w = 20):
 filename = sys.argv[1]
 if filename[-4:] != '.pdf':
     filename = (filename+'.pdf').replace('..','.')
+
     
 if not os.path.exists(filename):
     print(filename + ' does not exist, exiting')
     sys.exit(0)
     
+base_path = os.path.abspath(os.path.dirname(filename))
+        
 # check config file
 if os.path.exists(filename.replace('.pdf', '.yaml')):
     config = yaml.safe_load(open(filename.replace('.pdf', '.yaml')))
 else:
     config = {}
     
+# try to see if any corresponding tex file to detect videos
+tex = filename.replace('.pdf','.tex')
+if os.path.exists(tex):
+    with open(tex) as f:
+        tex = f.read().splitlines()
+    tex = [line.split('%')[0] for line in tex]
+    video_ext = ['.'+ext for ext in ('mp4','avi','mkv')]
+    
+    last_frame = None
+    
+    def split(line):
+        return line.replace('}','{').split('{')
+    
+    for line in tex:
+        if '\\begin{frame}' in line:
+            frame = split(line)[3]
+        else:
+            elems = split(line)
+            vid = [any([elem.endswith(ext) for ext in video_ext]) for elem in elems]
+            if True in vid:
+                vid = elems[vid.index(True)]
+                if frame not in config:
+                    config[frame] = {}
+                config[frame]['video'] = f'{base_path}/{vid}'
+                if last_frame == frame:
+                    print('Several videos found in', frame)
+                last_frame = frame
+
 video_x = 99.5
 video_y = 0.5
 video_w = 3
@@ -97,7 +128,7 @@ def read_pose(pose, base_pose = (0,0,0,0,0,0), scaling=True):
     return pose + base_pose[len(pose)-6:]
 
 def Homogeneous(pose):
-    R = euler2mat(pose[3], pose[4], pose[5], 'rxyz')
+    R = euler2mat(pose[3], pose[4], pose[5])
     t = np.array(pose[:3]).reshape(3,1)
     M = np.vstack((np.hstack((R, t)), [0,0,0,1]))
     for i in range(3):
