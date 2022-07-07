@@ -16,7 +16,7 @@ def generate_launch_description():
     
     # environment
     with sl.group(ns='islands'):
-        sl.robot_state_publisher('marine_presenter','islands.urdf')
+        sl.robot_state_publisher('coral','islands.urdf')
                
     # descriptions
     objects = <objects>
