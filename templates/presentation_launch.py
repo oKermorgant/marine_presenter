@@ -15,8 +15,8 @@ def generate_launch_description():
                                  'remote': sl.arg('remote')})
     
     # environment
-    with sl.group(ns='islands'):
-        sl.robot_state_publisher('coral','islands.urdf')
+    sl.node('coral', 'coral_gui')
+    sl.node('coral', 'spawn', parameters = {'urdf_model': sl.robot_description('coral','islands.urdf')})
                
     # descriptions
     objects = <objects>
