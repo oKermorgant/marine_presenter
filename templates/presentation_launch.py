@@ -16,7 +16,7 @@ def generate_launch_description():
     
     # environment
     sl.node('coral', 'coral_gui')
-    sl.node('coral', 'spawn', parameters = {'urdf_model': sl.robot_description('coral','islands.urdf')})
+    sl.node('coral', 'spawn', parameters = {'world_model': sl.find('coral','islands.urdf')})
                
     # descriptions
     objects = <objects>
@@ -25,6 +25,7 @@ def generate_launch_description():
     for name, filename in objects.items():
         with sl.group(ns=name):
             sl.robot_state_publisher(description_file=filename, xacro_args={'prefix': name})
+    sl.node('coral', 'spawn')
             
     for link, pose in fixed_tfs.items():
         sl.node('tf2_ros', 'static_transform_publisher', link[:link.find('/')] + '_static', 

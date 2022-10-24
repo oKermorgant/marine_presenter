@@ -22,10 +22,9 @@ while dev == None:
         dev = evdev.InputDevice(fn)
         if 'Kensington' in dev.name:
             break
-        
-    if 'Kensington' in dev.name:
-        break
     sleep(1)
+        
+
 
 keys = {}
 keys[evdev.ecodes.KEY_PAGEDOWN] = ButtonPress.Request.BUTTON_NEXT
