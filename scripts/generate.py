@@ -170,7 +170,7 @@ config_out = basename + '/config.yaml'
 generate = '-f' in sys.argv
 
 def slide_img(slide):
-    return '{}/{}.{}'.format(img_path, slide, ext)
+    return f'{img_path}/{slide}.{ext}'
 
 for path in (basename, mesh_path, img_path):
     if not os.path.exists(path):
@@ -186,7 +186,7 @@ pages = int(pages.replace('Pages:','').replace(' ',''))
 
 titles = {}
 for slide in range(1,pages+1):
-    title = check_output(['pdftotext','-f', str(slide), '-l', str(slide),'-layout', '{}'.format(filename),'-']).decode('utf-8')
+    title = check_output(['pdftotext','-f', str(slide), '-l', str(slide),'-layout', filename,'-']).decode('utf-8')
     title = title[:title.find('\n')]
     if [ord(c) for c in title[-2:]] == [8722,49]:
         title = title[:-5]
@@ -218,7 +218,7 @@ for title, slides in titles.items():
                 rec_insert(config, [base_slide+offset, 'video'], video_path)
  
 videos = sorted([key for key in config if type(key) == int and 'video' in config[key]])
-print('Found {} slides'.format(pages))
+print(f'Found {pages} slides')
         
 pdf_change = True
 video_change = True
@@ -236,11 +236,11 @@ config['pdf_time'] = int(os.stat(filename).st_mtime)
     
     
 if pdf_change or video_change or generate:
-    print('{} change: generating base images...'.format(pdf_change and 'PDF' or 'Videos'))
-    os.system('pdftoppm {} -{} -scale-to 2048 {}/'.format(filename, ext if ext == 'png' else 'jpeg', img_path))
+    print(f"{pdf_change and 'PDF' or 'Videos'} change: generating base images...")
+    os.system(f'pdftoppm {filename} -{ext} -scale-to 2048 {img_path}/')
     
     for img in os.listdir(img_path):
-        os.rename('{}/{}'.format(img_path, img), '{}/{}'.format(img_path, img.strip('-0')))
+        os.rename(f'{img_path}/{img}', f"{img_path}/{img.strip('-0')}")
     
     # add video tag / borders
     for idx in videos:
@@ -268,9 +268,9 @@ for slide in range(1, pages+1):
     H,W = im.shape[:2]
     ratio = round(float(W)/H,2)
         
-    dest = '{}/{}.osg'.format(mesh_path,str(slide))
+    dest = f'{mesh_path}/{slide}.osg'
     if scale_change or not os.path.exists(dest):
-        open(dest, 'w').write(base_mesh.replace('<image>', 'img/{}.{}'.format(slide, ext)).replace('<x>', str(ratio*scale)).replace('<z>', str(scale)))
+        open(dest, 'w').write(base_mesh.replace('<image>', f'img/{slide}.{ext}').replace('<x>', str(ratio*scale)).replace('<z>', str(scale)))
     
     # add pose information
     if slide not in config:
@@ -300,8 +300,8 @@ if 'objects' in config:
             
             while l and not found:
                 if xacro_file[:l] + '.xacro' in marine_files:
-                    print('  Found object "{}", available in marine_presenter as {}.xacro'.format(name, xacro_file[:l]))
-                    xacro_file = '{}/objects/urdf/{}.xacro'.format(marine_ppt, xacro_file[:l])
+                    print(f'  Found object "{name}", available in marine_presenter as {xacro_file[:l]}.xacro')
+                    xacro_file = f'{marine_ppt}/objects/urdf/{xacro_file[:l]}.xacro'
                     found = True                    
                 l -= 1
             
@@ -313,7 +313,7 @@ if 'objects' in config:
                         for ext in ('.xacro','.urdf'):
                             candidate = xacro_file[:l] + ext
                             if candidate in files:
-                                print('  Found object "{}", found locally as {}'.format(name, candidate))
+                                print(f'  Found object "{name}", found locally as {candidate}')
                                 xacro_file = os.path.join(root, candidate)
                                 found = True
                                 break
@@ -322,16 +322,16 @@ if 'objects' in config:
                     l -= 1
             
             if not found:
-                print('  Cannot find object "{}" in marine_presenter or local path'.format(name))
+                print(f'  Cannot find object "{name}" in marine_presenter or local path')
             
             data['file'] = xacro_file
             
         else:
             # just check the file exists and trust the user
             if os.path.exists(xacro_file):
-                print('  Found object "{}" at {}'.format(name, xacro_file))
+                print(f'  Found object "{name}" at {xacro_file}')
             else:
-                print('  Cannot find object "{}", should be at {}'.format(name, xacro_file))
+                print(f'  Cannot find object "{name}", should be at {xacro_file}')
 
         # find pose and scale
         pose = [0,0,0,0,0,0]

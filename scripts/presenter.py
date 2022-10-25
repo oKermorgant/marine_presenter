@@ -274,7 +274,7 @@ class PresenterNode(Node):
         self.in_video = False
         
         self.timer = self.create_timer(0.05, self.update)
-        
+
     def show_slide(self):
         self.slides[self.slide].show()
         
@@ -336,6 +336,13 @@ executor = SingleThreadedExecutor()
 
 executor.add_node(PresenterNode('presenter'))
 executor.add_node(RSPNode())
+
+from threading import Thread
+from time import sleep
+def spawn():
+    sleep(4)
+    os.system('ros2 run coral spawn')
+Thread(target=spawn).start()
 
 executor.spin()
 
