@@ -9,7 +9,7 @@ from rclpy.executors import SingleThreadedExecutor
 from ament_index_python import get_package_share_directory
 from tf2_ros import TransformBroadcaster
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import TransformStamped, Transform
+from geometry_msgs.msg import TransformStamped
 from std_msgs.msg import Int32, String
 
 import xacro
@@ -36,15 +36,22 @@ def mat2Rot(R):
     except:
         return Rotation.from_matrix(R)
 
+
 def euler2mat(r, p, y):  
-    return Rot2mat(Rotation.from_euler('xyz',(r,p,y)))    
+    return Rot2mat(Rotation.from_euler('xyz',(r,p,y)))
+
+
 def axangle2mat(r):
     return Rot2mat(Rotation.from_rotvec(r))
 
+
 def mat2axangle(R):
     return mat2Rot(R).as_rotvec()
+
+
 def mat2quat(R,q):
-    q.x,q.y,q.z,q.w = mat2Rot(R).as_quat()    
+    q.x,q.y,q.z,q.w = mat2Rot(R).as_quat()
+
 
 config_file = sys.argv[1]
 if not config_file.endswith('.yaml'):
@@ -54,9 +61,11 @@ if not config_file.endswith('.yaml'):
 with open(config_file) as f:
     config = yaml.safe_load(f)
     
+
 def HomogeneousFrom(t, R):
     return np.matrix(np.vstack((np.hstack((R, t)), [0,0,0,1])))
     
+
 def Homogeneous(pose):
     R = euler2mat(pose[3], pose[4], pose[5])
     t = np.array(pose[:3]).reshape(3,1)
@@ -68,12 +77,14 @@ def Homogeneous(pose):
                     M[i,j] = v
     return M
 
+
 def HomogeneousInverse(M):
     Minv = M.copy()
     Minv[:3,:3] = M[:3,:3].T
     Minv[:3,[3]] = -Minv[:3,:3]*M[:3,[3]]
     return Minv
     
+
 class Camera:
     def __init__(self, M,gain):
         self.M = M.copy()
@@ -129,7 +140,7 @@ class Button:
         if self.slide_prev == -1:
             self.slide_prev = des_slide
         
-        if des_slide != self.slide_prev:   
+        if des_slide != self.slide_prev:
             self.slide = des_slide
             self.slide_prev = des_slide
     
@@ -169,7 +180,7 @@ class MovingObject:
         if self.has_joints:
             
             self.joint_pub = node.create_publisher(JointState, '/{}/joint_states'.format(name), 1)
-            self.joints_T = params['joints']            
+            self.joints_T = params['joints']
             self.joints = JointState()
             self.joints.name = [j.name for j in urdf.joints if j.joint_type != 'fixed']
             self.joints.position = [0. for _ in self.joints_T]
@@ -279,7 +290,7 @@ class PresenterNode(Node):
         self.slides[self.slide].show()
         
     def hide_slide(self):
-        self.slides[self.slide].hide()        
+        self.slides[self.slide].hide()
         
     def update(self):
                 
@@ -313,9 +324,9 @@ class PresenterNode(Node):
             self.Md = self.slides[self.slide].cam
             
         # update TFs
-        now = self.get_clock().now()        
+        now = self.get_clock().now()
         for obj in self.objects:
-            obj.update(now)            
+            obj.update(now)
         poses['coral_cam_view'] = self.cam.move(self.Md)
         
         # publish them
