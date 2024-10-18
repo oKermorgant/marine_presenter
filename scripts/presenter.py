@@ -103,7 +103,9 @@ class Camera:
         else:
             err = HomogeneousInverse(Md)*self.M
         u_theta = mat2axangle(err[:3,:3])
-        err = HomogeneousFrom(self.gain*err[:3,[3]], axangle2mat(self.gain*u_theta))
+
+        gain = np.interp(np.linalg.norm(err[:3,[3]]), [0.5, 15.], [3*self.gain, self.gain])
+        err = HomogeneousFrom(gain*err[:3,[3]], axangle2mat(gain*u_theta))
         if straight:
             self.M *= err
         else:
@@ -156,10 +158,10 @@ class MovingObject:
         self.has_joints = 'joints' in params
                
         # load urdf to get root link
-        description = xacro.process(params['file'], mappings={'prefix': name})        
+        description = xacro.process(params['file'], mappings={'prefix': name})
         urdf = URDF.from_xml_string(description)
                 
-        if self.has_odom:            
+        if self.has_odom:
             self.link = urdf.get_root()
             self.rx = float(params['rx'])
             self.ry = float(params['ry'])
@@ -210,6 +212,7 @@ class MovingObject:
             
             self.joint_pub.publish(self.joints)
         
+
 class Slide:
 
     pose_offset = Homogeneous([0.01,0,0,0,0,0])
@@ -218,15 +221,15 @@ class Slide:
     
     def __init__(self, slide):
 
-        self.link = 'presenter/slide_{}'.format(slide)        
+        self.link = f'presenter/slide_{slide}'
         poses[self.link] = Homogeneous(config[slide if slide in config else 1]['pose'])
         self.front = False
                         
         cam_rel_pose = Homogeneous([2.8,0,0,0,0,0])
-        if 'fit' in config and slide in config['fit']:            
+        if 'fit' in config and slide in config['fit']:
             cam_rel_pose = Homogeneous([2.3,0,0,0,0,0])
-        cam_rel_pose[:3,3] *= config['scale']        
-        self.cam = poses[self.link] * Slide.pose_offset * cam_rel_pose
+        cam_rel_pose[:3,3] *= config['scale']
+        self.cam = poses[self.link] * cam_rel_pose
             
     def hide(self):
         if self.front:
@@ -236,7 +239,7 @@ class Slide:
     def show(self):
         if not self.front:
             poses[self.link] *= Slide.pose_offset
-            self.front = True            
+            self.front = True
         
 class RSPNode(Node):
     def __init__(self, **kwargs):
@@ -327,7 +330,9 @@ class PresenterNode(Node):
         now = self.get_clock().now()
         for obj in self.objects:
             obj.update(now)
-        poses['coral_cam_view'] = self.cam.move(self.Md)
+
+        cam_offset = Homogeneous([0,0,0,0,0,np.pi])
+        poses['coral_cam_view'] = cam_offset*self.cam.move(self.Md)
         
         # publish them
         transforms = []
@@ -341,7 +346,7 @@ class PresenterNode(Node):
         self.br.sendTransform(transforms)
         
 
-rclpy.init()    
+rclpy.init()
 
 executor = SingleThreadedExecutor()
 
@@ -353,7 +358,7 @@ from time import sleep
 def spawn():
     sleep(4)
     os.system('ros2 run coral spawn')
-Thread(target=spawn).start()
+#Thread(target=spawn).start()
 
 executor.spin()
 

@@ -282,10 +282,11 @@ for slide in range(1, pages+1):
     
 # objects are found by the presenter node, just adapt pose / scale and find files
 
+
 if 'objects' in config:
     print('Resolving object paths...')
     for name in config['objects']:
-        data = config['objects'][name]        
+        data = config['objects'][name]
         xacro_file = data['file'] if 'file' in data else name
         
         if xacro_file.startswith('package'):
@@ -302,7 +303,7 @@ if 'objects' in config:
                 if xacro_file[:l] + '.xacro' in marine_files:
                     print(f'  Found object "{name}", available in marine_presenter as {xacro_file[:l]}.xacro')
                     xacro_file = f'{marine_ppt}/objects/urdf/{xacro_file[:l]}.xacro'
-                    found = True                    
+                    found = True
                 l -= 1
             
             if not found:
